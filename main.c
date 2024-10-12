@@ -1,40 +1,40 @@
 // Autores: Pedro Guaita, Pedro Henrique, Matheus Cavalheiro e João Victor.
 #include <stdio.h>
 #include <string.h>
-#include <stdio_ext.h>
 #include <ctype.h>
- 
+#include <locale.h>
 #define controle 100
- 
 typedef struct {
         char nomeAluno[50];
         int idadeAluno;
-        char sexo[2];
+        char sexo;
         char universidade[50];
         char curso[50];
         int semestre;
         char documento[20];
         char email[30];
-        int telefone;
+        char telefone[20];
         int matricula;
 } str_alunos;
-
+ 
 str_alunos Alunos[controle];
-
 int qtdAlunos = 0;
  
+void limparBufferEntrada(){
+    int c;
+    while ((c = getchar()) != '\n'  && c != EOF);
+}
 void cadastrarAluno(){
-    
     int novosAlunos = 0;
     
     printf("\n");
     printf("Quantos alunos novos serão cadastrados: ");
     scanf("%d", &novosAlunos);
-    __fpurge(stdin);
+    limparBufferEntrada();
     
     if (qtdAlunos + novosAlunos > controle) {
         printf("\nErro: Número de alunos excede o limite do array.\n");
-        return; 
+        return;
     }
     
     for(int i = 0; i < novosAlunos; i++){
@@ -51,22 +51,22 @@ void cadastrarAluno(){
      do {
         printf("Digite a idade do Aluno: ");
         scanf("%d", &Alunos[qtdAlunos].idadeAluno);
-        __fpurge(stdin);
-
+        limparBufferEntrada();
+ 
         if (Alunos[qtdAlunos].idadeAluno < 16 || Alunos[qtdAlunos].idadeAluno > 120) {
             printf("Idade inválida. Digite uma idade entre 16 e 120.\n");
         }
         }while (Alunos[qtdAlunos].idadeAluno < 16 || Alunos[qtdAlunos].idadeAluno > 120);
-
+ 
     do {
         printf("Digite o sexo do Aluno com f ou m: ");
-        scanf("%c", &Alunos[qtdAlunos].sexo);
-        __fpurge(stdin);
-
-        if (Alunos[qtdAlunos].sexo[qtdAlunos] != 'f' && Alunos[qtdAlunos].sexo[qtdAlunos] != 'm') {
+        scanf(" %c", &Alunos[qtdAlunos].sexo);
+        limparBufferEntrada();
+ 
+        if (Alunos[qtdAlunos].sexo != 'f' && Alunos[qtdAlunos].sexo != 'm') {
             printf("Sexo inválido. Digite 'f' para feminino ou 'm' para masculino.\n");
         }
-    } while (Alunos[qtdAlunos].sexo[qtdAlunos] != 'f' && Alunos[qtdAlunos].sexo[qtdAlunos] != 'm');
+    } while (Alunos[qtdAlunos].sexo != 'f' && Alunos[qtdAlunos].sexo != 'm');
     
     do {
         printf("Digite a universidade do Aluno: ");
@@ -89,29 +89,47 @@ void cadastrarAluno(){
     do {
         printf("Digite apenas o número do semestre do Aluno: ");
         scanf("%d", &Alunos[qtdAlunos].semestre);
-        __fpurge(stdin);
-
+        limparBufferEntrada();
+ 
         if (Alunos[qtdAlunos].semestre < 1 || Alunos[qtdAlunos].semestre > 10) {
             printf("Semestre inválido. Digite um semestre entre 1 e 10.\n");
         }
     }while (Alunos[qtdAlunos].semestre < 1 || Alunos[qtdAlunos].semestre > 10);
-
-    printf("Digite o documento do Aluno: ");
-    fgets(Alunos[qtdAlunos].documento, 20, stdin);
-    __fpurge(stdin);
+ 
+    do{
+        printf("Digite o documento do Aluno: ");
+        fgets(Alunos[qtdAlunos].documento, 20, stdin);
+        Alunos[qtdAlunos].documento[strcspn(Alunos[qtdAlunos].documento, "\n")] = '\0';
+ 
+            if(strlen(Alunos[qtdAlunos].documento) == 0) {
+                printf("Documento não pode estar vazio. Digite novamente.\n");
+            }
+        } while(strlen(Alunos[qtdAlunos].documento) == 0);
+        
+    do{
+        printf("Digite o email do Aluno: ");
+        fgets(Alunos[qtdAlunos].email, 30, stdin);
+        Alunos[qtdAlunos].email[strcspn(Alunos[qtdAlunos].email, "\n")] = '\0';
+ 
+            if(strlen(Alunos[qtdAlunos].email) == 0) {
+                printf("email não pode estar vazio. Digite novamente.\n");
+             }
+    } while(strlen(Alunos[qtdAlunos].email) == 0);
     
-    printf("Digite o email do Aluno: ");
-    fgets(Alunos[qtdAlunos].email, 30, stdin);
-    __fpurge(stdin);
-    
-    printf("Digite apenas os números de telefone do Aluno: ");
-    scanf("%d", &Alunos[qtdAlunos].telefone);
-    __fpurge(stdin);
+    do{
+        printf("Digite o telefone do Aluno: ");
+        fgets(Alunos[qtdAlunos].telefone, 20, stdin);
+        Alunos[qtdAlunos].telefone[strcspn(Alunos[qtdAlunos].telefone, "\n")] = '\0';
+ 
+            if(strlen(Alunos[qtdAlunos].telefone) == 0) {
+                printf("telefone não pode estar vazio. Digite novamente.\n");
+             }
+    } while(strlen(Alunos[qtdAlunos].telefone) == 0);
     
     do{
         printf("Digite os números da matricula do Aluno: ");
         scanf("%d", &Alunos[qtdAlunos].matricula);
-        __fpurge(stdin);
+        limparBufferEntrada();
     
     
     int matriculaExiste = 0;
@@ -119,44 +137,44 @@ void cadastrarAluno(){
                 if (Alunos[j].matricula == Alunos[qtdAlunos].matricula) {
                     matriculaExiste = 1;
                     printf("Matrícula já existente. Digite outra matrícula.\n");
-                    break; 
+                    break;
                 }
             }
-
+ 
             if(!matriculaExiste) {
-                break; 
+                break;
             }
-
+ 
         }while (1);
     
     qtdAlunos ++;
     printf("\nAluno cadastrado com sucesso! \n");
   }
 }
-
+ 
 void listarAlunos() {
     if (qtdAlunos == 0) {
         printf("Nenhum aluno cadastrado.\n");
         return;
     }
-
+ 
     printf("\nLista de Alunos:\n");
     for (int i = 0; i < qtdAlunos; i++) {
         printf("Nome: %s\n", Alunos[i].nomeAluno);
         printf("Idade: %d\n", Alunos[i].idadeAluno);
-        printf("Sexo: %c\n", Alunos[i].sexo[0]); // Imprime apenas o primeiro caractere do sexo
+        printf("Sexo: %c\n", Alunos[i].sexo);
         printf("Universidade: %s\n", Alunos[i].universidade);
         printf("Curso: %s\n", Alunos[i].curso);
         printf("Semestre: %d\n", Alunos[i].semestre);
         printf("Documento: %s\n", Alunos[i].documento);
         printf("Email: %s\n", Alunos[i].email);
-        printf("Telefone: %d\n", Alunos[i].telefone);
+        printf("Telefone: %s\n", Alunos[i].telefone);
         printf("Matrícula: %d\n\n", Alunos[i].matricula);
     }
 }
     
 int main() {
-    
+    setlocale(LC_ALL, "");
     int opcao;
     
 do{   
@@ -168,8 +186,7 @@ printf("\nEscolha uma das opções do menu: \n");
         printf("4 - Carregar dados dos alunos:\n");
         printf("5 - Salvar dados dos alunos:\n");
     scanf("%d", &opcao);
-    __fpurge(stdin);
- 
+    limparBufferEntrada();
 switch (opcao){
     case 1:
         cadastrarAluno();
@@ -199,6 +216,5 @@ switch (opcao){
         printf("Opção invalida!!!");
     }
 }  while(opcao != 0);
- 
 return 0;
 }
